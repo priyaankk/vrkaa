@@ -27,7 +27,7 @@ def reorder_products():
     # Parse input JSON for the query prompt
     data = request.json
     search_prompt = data.get("search_prompt", "")
-    search_terms = data.get("search_terms", [])
+    search_terms = ['mouse''controller','headset','keyboard']
 
     # Select the best search term
     search_term = select_best_term(search_prompt, search_terms)
@@ -90,7 +90,11 @@ def reorder_products():
                 "price": f"{node['variants']['edges'][0]['node']['price']['amount']} {node['variants']['edges'][0]['node']['price']['currencyCode']}"
             })
 
-        return jsonify(flattened_products)
+        # Save to a JSON file and return it as the response
+        with open("reordered.json", "w") as f:
+            json.dump(flattened_products, f, indent=2)
+
+        return jsonify(flattened_products)  # Return the flattened JSON as the response
 
     return jsonify({"error": "Failed to fetch products", "status": response.status_code}), response.status_code
 
